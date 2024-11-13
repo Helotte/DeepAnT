@@ -1,18 +1,18 @@
 defaults:
-  - dataset: nab
+  - dataset: new_york_port
 
 common:
   seed: 200
   device: cpu
 
 dataset:
-  nab:
-    dataset_name: NAB
-    max_initial_steps: 100
-    max_steps: 2000
-    batch_size: 16
-    patience: 150
-    lr: 1e-3
-    window_size: 10
-    hidden_size: 256
-    run_dir: ./experiment/nab
+  new_york_port:
+      dataset_name: NewYork_port
+      max_initial_steps: 5  # number of initial training epochs
+      max_steps: 10  # number of main training epochs
+      batch_size: 16
+      patience: 150
+      lr: 1e-3
+      window_size: 25
+      hidden_size: 256
+      run_dir: ./experiment/new_york_port

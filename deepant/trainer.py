@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from deepant.model import DeepAntPredictor
+import pandas as pd
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -175,6 +176,15 @@ class DeepAnT:
 
         # Anomalies identification
         anomalies, anomalies_indices = self.identify_anomalies(anomaly_scores, threshold)
+        timestamps = pd.read_csv(
+                os.path.join("./data", self.config["dataset_name"], "NewYork_port_data_2020_2024.csv"),
+                parse_dates=["summary_time"]
+            )["summary_time"].values    
+        anomaly_timestamps = [timestamps[i + self.config["window_size"]] for i in anomalies]
+        print("Anomalies detected at timestamps:")
+        for timestamp in anomaly_timestamps:
+            print(timestamp)  
+        
         with open(os.path.join(self.config["run_dir"], "anomalies_indices.json"), "w") as json_file:
             json.dump(anomalies_indices, json_file)
         logger.info(f"Anomalies detected at indices: {anomalies}")
@@ -182,7 +192,7 @@ class DeepAnT:
         self.visualize_results(self.test_dataset, ground_truth, predictions, anomalies, anomaly_scores, threshold)
         logger.info("Anomaly detection process completed.")
 
-    def calculate_threshold(self, anomaly_scores, std_rate=2):
+    def calculate_threshold(self, anomaly_scores, std_rate=3):
         """
         Calculate a dynamic threshold for anomaly detection.
 
@@ -208,10 +218,19 @@ class DeepAnT:
         Returns:
             tuple: List of anomaly indices and a dictionary of anomalies.
         """
+        anomalies = []
         anomalies_dict = {}
-        if self.feature_dim == 1:
+        
+        if self.feature_dim == 1 or isinstance(anomaly_scores[0], (float, int)):
             anomalies = [i for i, score in enumerate(anomaly_scores) if score > threshold]
-            anomalies_dict["Feature_1"] = anomalies
+            anomalies_dict["Aggregated_Score"] = anomalies
+        else:
+            for feature_idx in range(self.feature_dim):
+                feature_anomalies = [i for i, score in enumerate(anomaly_scores) if score[feature_idx] > threshold]
+                anomalies_dict[f"Feature_{feature_idx + 1}"] = feature_anomalies
+                anomalies.extend(feature_anomalies)
+        anomalies = sorted(set(anomalies))
+        
         print("Anomalies Detected: ", anomalies_dict)
         return anomalies, anomalies_dict
 

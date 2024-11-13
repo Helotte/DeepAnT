@@ -49,12 +49,17 @@ def load_data(dataset_name, window_size, device, val_rate=0.1, test_rate=0.1):
     logger.info(f"Loading dataset: {dataset_name}")
     path = os.path.join("./data", dataset_name)
 
-    data = pd.read_csv(os.path.join(path, "TravelTime_451.csv"), index_col="timestamp", parse_dates=["timestamp"])
+    data = pd.read_csv(os.path.join(path, "NewYork_port_data_2020_2024.csv"), index_col="summary_time", parse_dates=["summary_time"])
     logger.info(f"Dataset shape: {data.shape}")
+    # data_scaled = sc.fit_transform(data.value.to_numpy().reshape(-1, 1))
+    # features = ["moor_num", "berth_num", "stay_num", "moor_dwt", "berth_dwt", "stay_dwt", "total_wait_duration", "total_berth_duration", "total_stay_duration"]
+    # data_selected = data[features]
+    data = data.drop(columns=['summary_time'], errors='ignore')
+    
     sc = MinMaxScaler()
-    data_scaled = sc.fit_transform(data.value.to_numpy().reshape(-1, 1))
+    data_scaled = sc.fit_transform(data.values)
     data_x, data_y = split_data(data_scaled, window_size)
-    data_y = np.squeeze(data_y, axis=(1, 2))
+    data_y = np.squeeze(data_y)
 
     train_slice = slice(None, int((1 - val_rate - test_rate) * len(data_x)))
     val_slice = slice(int((1 - val_rate - test_rate) * len(data_x)), int((1 - test_rate) * len(data_x)))
