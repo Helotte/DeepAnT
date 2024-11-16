@@ -8,8 +8,8 @@ common:
 dataset:
   new_york_port:
       dataset_name: NewYork_port
-      max_initial_steps: 5  # number of initial training epochs
-      max_steps: 10  # number of main training epochs
+      max_initial_steps: 100  # number of initial training epochs
+      max_steps: 500  # number of main training epochs
       batch_size: 16
       patience: 150
       lr: 1e-3
