@@ -32,6 +32,7 @@ class DataModule(torch.utils.data.Dataset):
         )
         return dataset
 
+# you need to adjust here when you want to use a new dataset (change line 53)
 def load_data(dataset_name, window_size, device, val_rate=0.1, test_rate=0.1):
     """
     Load and preprocess the dataset.
@@ -49,7 +50,7 @@ def load_data(dataset_name, window_size, device, val_rate=0.1, test_rate=0.1):
     logger.info(f"Loading dataset: {dataset_name}")
     path = os.path.join("./data", dataset_name)
 
-    data = pd.read_csv(os.path.join(path, "NewYork_port_data_2020_2024.csv"), index_col="summary_time", parse_dates=["summary_time"])
+    data = pd.read_csv(os.path.join(path, "smoothed_LA_data.csv"), index_col="summary_time", parse_dates=["summary_time"])
     logger.info(f"Dataset shape: {data.shape}")
     # data_scaled = sc.fit_transform(data.value.to_numpy().reshape(-1, 1))
     # features = ["moor_num", "berth_num", "stay_num", "moor_dwt", "berth_dwt", "stay_dwt", "total_wait_duration", "total_berth_duration", "total_stay_duration"]
