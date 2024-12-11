@@ -5,14 +5,41 @@ common:
   seed: 200
   device: cpu
 
+# dataset:
+#   new_york_port:
+#       dataset_name: NewYork_port
+#       max_initial_steps: 100  # number of initial training epochs
+#       max_steps: 500  # number of main training epochs
+#       batch_size: 16
+#       patience: 150
+#       lr: 1e-3
+#       window_size: 25
+#       hidden_size: 256
+#       run_dir: ./experiment/new_york_port
+
+
+# dataset:
+#   LA_port:
+#       dataset_name: smoothed_data
+#       specific_dataset: smoothed_LA_data.csv
+#       max_initial_steps: 30  # number of initial training epochs
+#       max_steps: 100  # number of main training epochs
+#       batch_size: 16
+#       patience: 150
+#       lr: 1e-3
+#       window_size: 45
+#       hidden_size: 256
+#       run_dir: ./experiment/LA_port
+
 dataset:
-  new_york_port:
-      dataset_name: NewYork_port
-      max_initial_steps: 100  # number of initial training epochs
-      max_steps: 500  # number of main training epochs
+  LA_port:
+      dataset_name: smoothed_data
+      specific_dataset: smoothed_Singapore_data.csv
+      max_initial_steps: 20
+      max_steps: 100
       batch_size: 16
       patience: 150
       lr: 1e-3
-      window_size: 25
+      window_size: 45
       hidden_size: 256
-      run_dir: ./experiment/new_york_port
+      run_dir: ./experiment/Singapore_port

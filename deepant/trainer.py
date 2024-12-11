@@ -175,9 +175,11 @@ class DeepAnT:
         logger.info(f"Calculated threshold for anomaly detection: {threshold}")
 
         # Anomalies identification
+        # you need to adjust this when you want to use a new dataset
+        # 加到config之后这里就不用改了
         anomalies, anomalies_indices = self.identify_anomalies(anomaly_scores, threshold)
         timestamps = pd.read_csv(
-                os.path.join("./data", self.config["dataset_name"], "NewYork_port_data_2020_2024.csv"),
+                os.path.join("./data", self.config["dataset_name"], self.config["specific_dataset"]),
                 parse_dates=["summary_time"]
             )["summary_time"].values    
         anomaly_timestamps = [timestamps[i + self.config["window_size"]] for i in anomalies]
